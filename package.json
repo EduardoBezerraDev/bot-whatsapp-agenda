@@ -1,0 +1,28 @@
+{
+  "type": "module",
+  "name": "bot-whatsapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@adiwajshing/baileys": "^5.0.0",
+    "@adiwajshing/keyed-db": "^0.2.4",
+    "@whiskeysockets/baileys": "^6.7.9",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "firebase": "^9.23.0",
+    "firebase-admin": "^13.0.2",
+    "imap-simple": "^5.1.0",
+    "imapflow": "^1.0.178",
+    "mailparser": "^3.7.2",
+    "node-schedule": "^2.1.1",
+    "pino": "^9.6.0",
+    "qrcode-terminal": "^0.12.0",
+    "uuid": "^11.0.5"
+  }
+}
