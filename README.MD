@@ -8,7 +8,7 @@ Siga os passos abaixo para configurar e executar o bot:
 
 1. Clone o repositório:
     ```sh
-    git clone https://github.com/seu-usuario/bot-whatsapp-agenda.git
+    git clone https://github.com/EduardoBezerraDev/bot-whatsapp-agenda.git
     cd bot-whatsapp-agenda
     ```
 
