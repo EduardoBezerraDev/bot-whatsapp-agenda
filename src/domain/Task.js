@@ -129,7 +129,7 @@ export const handleAgenda = async (sock, sender) => {
   await sendWhatsAppMessage(sock, sender, await showScheduledTasks(sender));
 };
 
-export const handleHistorico = async (sock, sender) => {
+export const handleHistory = async (sock, sender) => {
   const userTasks = completedTasks.filter((task) => task.sender === sender);
   if (userTasks.length === 0) {
     await sendWhatsAppMessage(
