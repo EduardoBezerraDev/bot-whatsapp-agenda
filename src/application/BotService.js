@@ -37,11 +37,11 @@ export const handleIncomingMessages = async (sock, msg) => {
   const message = msg.messages[0];
   const receivedText = message.message?.conversation?.toLowerCase();
   const sender = message.key.remoteJid;
-
+  const isReceivedTextString = typeof receivedText === "string";
   addLog(`Mensagem recebida: ${receivedText || "[sem texto]"}`);
 
-  const command = Object.keys(commandHandlers).find((cmd) =>
-    receivedText.startsWith(cmd)
+  const command = Object.keys(commandHandlers).find(
+    (cmd) => isReceivedTextString && receivedText.startsWith(cmd)
   );
   if (command) {
     await commandHandlers[command](sock, sender, receivedText);
