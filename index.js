@@ -1,11 +1,19 @@
+import express from "express";
 import { startBot } from "./src/adapters/inbound/WhatsAppBot.js";
 import { addLog } from "./src/adapters/outbound/WhatsAppService.js";
 
-(async () => {
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+  res.send("Bot WhatsApp Agenda está rodando!");
+});
+
+app.listen(PORT, async () => {
   try {
     await startBot();
-    addLog("Bot iniciado com sucesso!");
+    addLog(`Bot iniciado com sucesso e escutando na porta ${PORT}!`);
   } catch (error) {
     addLog(`Erro ao iniciar o bot: ${error.message}`);
   }
-})();
+});
