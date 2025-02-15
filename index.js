@@ -12,7 +12,6 @@ app.get("/", (req, res) => {
 app.listen(PORT, async () => {
   try {
     await startBot();
-    addLog(`Bot iniciado com sucesso e escutando na porta ${PORT}!`);
   } catch (error) {
     addLog(`Erro ao iniciar o bot: ${error.message}`);
   }

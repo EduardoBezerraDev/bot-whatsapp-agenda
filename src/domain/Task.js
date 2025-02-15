@@ -14,12 +14,33 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { db } from "../adapters/outbound/FirebaseService.js";
-import { v4 as uuidv4 } from "uuid";
 
 const scheduledTasks = {};
 
 const generateNumericID = () => {
   return Math.floor(100000 + Math.random() * 900000);
+};
+
+const showScheduledTasks = async (sender) => {
+  const q = query(collection(db, "tasks"), where("sender", "==", sender));
+  const tasksSnapshot = await getDocs(q);
+  if (tasksSnapshot.empty) {
+    return "📋 Você não tem tarefas agendadas.";
+  }
+
+  let response = "*Suas tarefas agendadas:*\n";
+  tasksSnapshot.forEach((doc) => {
+    const task = doc.data();
+    response += `\n\nID:\n ${doc.id}\n\nTarefa:\n *${
+      task.task
+    }*\n\nAgendada para:\n *${new Date(
+      task.scheduledAt
+    ).toLocaleString()}*\n\nRecorrência:\n *${task.repeat}*\n\nPrioridade:\n *${
+      task.priority
+    }*\n\n----------------`;
+  });
+
+  return response;
 };
 
 export const scheduleTask = async (
@@ -42,7 +63,7 @@ export const scheduleTask = async (
   let job;
   if (repeat === "diario") {
     job = scheduleJob(
-      { hour: taskDate.getUTCHours(), minute: taskDate.getUTCMinutes() },
+      { hour: taskDate.getHours(), minute: taskDate.getMinutes() },
       async () => {
         sendMessage &&
           (await sendWhatsAppMessage(
@@ -55,9 +76,9 @@ export const scheduleTask = async (
   } else if (repeat === "semanal") {
     job = scheduleJob(
       {
-        dayOfWeek: taskDate.getUTCDay(),
-        hour: taskDate.getUTCHours(),
-        minute: taskDate.getUTCMinutes(),
+        dayOfWeek: taskDate.getDay(),
+        hour: taskDate.getHours(),
+        minute: taskDate.getMinutes(),
       },
       async () => {
         sendMessage &&
@@ -71,9 +92,9 @@ export const scheduleTask = async (
   } else if (repeat === "mensal") {
     job = scheduleJob(
       {
-        date: taskDate.getUTCDate(),
-        hour: taskDate.getUTCHours(),
-        minute: taskDate.getUTCMinutes(),
+        date: taskDate.getDate(),
+        hour: taskDate.getHours(),
+        minute: taskDate.getMinutes(),
       },
       async () => {
         sendMessage &&
@@ -115,35 +136,27 @@ export const scheduleTask = async (
 };
 
 export const handleScheduleTask = async (sock, sender, receivedText) => {
-  const [command, date, time, ...taskArray] = receivedText.split(" ");
-  const task = taskArray.join(" ");
-  const scheduledAt = new Date(`${date}T${time}:00Z`);
-  const taskId = uuidv4();
-  const repeat = "nenhum";
+  const parts = receivedText.split(" ");
+  if (parts.length < 4) {
+    await sendWhatsAppMessage(
+      sock,
+      sender,
+      "Formato inválido. Utilize: !agendar YYYY-MM-DD HH:mm <diario|semanal|mensal|nenhum> Texto da Tarefa."
+    );
+    return;
+  }
 
-  await setDoc(doc(db, "tasks", taskId), {
-    scheduledAt: scheduledAt.toISOString(),
-    sender,
-    task,
-    repeat,
-    priority: "normal", // Ajuste conforme necessário
-  });
+  const dateStr = `${parts[1]} ${parts[2]}`;
+  let repeat = "nenhum";
+  let taskTextStartIndex = 3;
 
-  scheduleJob(taskId, scheduledAt, async () => {
-    await sendWhatsAppMessage(sock, sender, `🔔 Lembrete: ${task}`);
-    if (repeat === "nenhum") {
-      await deleteDoc(doc(db, "tasks", taskId));
-    }
-  });
+  if (["diario", "semanal", "mensal"].includes(parts[3])) {
+    repeat = parts[3];
+    taskTextStartIndex = 4;
+  }
 
-  const confirmationMessage = `✅ Tarefa agendada para:\n\n📅 Data: ${scheduledAt.toLocaleDateString(
-    "pt-BR",
-    { timeZone: "UTC" }
-  )}\n🕒 Hora: ${scheduledAt.toLocaleTimeString("pt-BR", {
-    timeZone: "UTC",
-  })}\n\n🆔 ID: ${taskId}\n🔁 Recorrência: ${repeat}`;
-  await sendWhatsAppMessage(sock, sender, confirmationMessage);
-  addLog(`Tarefa agendada: ${taskId} para ${sender}`);
+  const taskText = parts.slice(taskTextStartIndex).join(" ");
+  scheduleTask(sock, dateStr, sender, repeat, taskText);
 };
 
 export const handleAgenda = async (sock, sender) => {

@@ -20,12 +20,10 @@ export const startBot = async () => {
       await startBot();
     }
     if (qr) {
-      addLog("Escaneie o QR Code para conectar ao WhatsApp.");
       qrcode.generate(qr, { small: true });
     }
     if (connection === "open") {
       await restoreScheduledTasks(sock);
-      addLog("Conexão estabelecida com sucesso!");
     } else if (connection === "close") {
       addLog("Conexão encerrada.");
     } else {

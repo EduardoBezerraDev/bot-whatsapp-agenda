@@ -2,16 +2,14 @@ import { initializeApp } from "firebase/app";
 import {
   getFirestore,
   doc,
-  getDoc,
   deleteDoc,
-  setDoc,
   collection,
   query,
-  where,
   getDocs,
 } from "firebase/firestore";
 import { firebaseConfig } from "../../config/firebaseConfig.js";
 import { addLog } from "./WhatsAppService.js";
+import { scheduleTask } from "../../domain/Task.js";
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
@@ -40,7 +38,7 @@ export const restoreScheduledTasks = async (sock) => {
         continue;
       }
 
-      scheduleTask(
+      await scheduleTask(
         sock,
         task.scheduledAt,
         task.sender,
@@ -52,7 +50,6 @@ export const restoreScheduledTasks = async (sock) => {
       restoredCount++;
     }
 
-    addLog(`🔥 ${restoredCount} tarefas restauradas com sucesso!`);
   } catch (error) {
     addLog(`Erro ao restaurar tarefas: ${error.message}`);
   }

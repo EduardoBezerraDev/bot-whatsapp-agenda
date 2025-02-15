@@ -1,5 +1,4 @@
 import {
-  addLog,
   sendWhatsAppMessage,
 } from "../adapters/outbound/WhatsAppService.js";
 import {
@@ -38,7 +37,6 @@ export const handleIncomingMessages = async (sock, msg) => {
   const receivedText = message.message?.conversation?.toLowerCase();
   const sender = message.key.remoteJid;
   const isReceivedTextString = typeof receivedText === "string";
-  addLog(`Mensagem recebida: ${receivedText || "[sem texto]"}`);
 
   const command = Object.keys(commandHandlers).find(
     (cmd) => isReceivedTextString && receivedText.startsWith(cmd)
