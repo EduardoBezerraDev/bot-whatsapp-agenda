@@ -44,6 +44,8 @@ A arquitetura do projeto é dividida em várias camadas para melhor organizaçã
 - **Application**: Contém a lógica de negócios principal do bot.
 - **Domain**: Contém a lógica de domínio, como agendamento de tarefas e manipulação de dados.
 - **Config**: Contém as configurações do Firebase.
+- **util**: Contém as funções uteis em todo o projeto.
+
 
 ### Estrutura de Pastas
 
@@ -61,6 +63,7 @@ A arquitetura do projeto é dividida em várias camadas para melhor organizaçã
     Task.js
   /config
     firebaseConfig.js
+  /util
 index.js
 ```
 
