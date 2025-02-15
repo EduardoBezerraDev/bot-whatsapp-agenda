@@ -1,6 +1,6 @@
 # Bot WhatsApp Agenda
 
-Este projeto é um bot de agendamento para WhatsApp que permite aos usuários criar lembretes, agendar tarefas e configurar repetições automáticas. O bot é construído usando a biblioteca Baileys para interagir com o WhatsApp e Firebase para armazenamento de dados.
+Este projeto é um bot de agendamento para WhatsApp que permite aos usuários criar lembretes, agendar tarefas e configurar repetições automáticas. O bot é construído usando nodeJS, node-schedule, Baileys para interagir com o WhatsApp, e Firebase para armazenamento de dados.
 
 ## Instalação
 
