@@ -55,6 +55,7 @@ export const scheduleTask = async (
   const taskId = String(generateNumericID());
   const taskDate = new Date(dateStr);
   console.log('taskDate', taskDate);
+  console.log('data atual', new Date());
   if (isNaN(taskDate)) {
     addLog(`Data inválida fornecida: ${dateStr}`);
     return;
